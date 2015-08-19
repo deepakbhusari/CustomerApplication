@@ -20,15 +20,16 @@ app.controller('customerController', ['$scope', function($scope,$routeParams) {
 
 app.controller('customerListController', ['$scope', '$resource' ,function($scope, $resource, customers) {
 	var resourceUrl = $resource('/App1/rest/customers/all');
-   $scope.heading = 'Customer List';
+    $scope.master = {};    
+  $scope.heading = 'Customer List';
  
     resourceUrl.query(function(data) {
     	   $scope.customers=data;
     });
     
     $scope.editCustomer = function(customerId) {
-    	
-    }
+    	console.log("hi");
+    };
 }]);
 
 app.controller('customerFormCtrl', ['$scope',  '$resource' ,'$window' , function($scope, $resource, $window, customerData) {
@@ -42,23 +43,13 @@ app.controller('customerFormCtrl', ['$scope',  '$resource' ,'$window' , function
     	//console.log(customer);
 //    	console.log(customerData.name);
 
-    	
-    	resourceUrl.save(JSON.stringify(customerData));
-    	
-        $window.location.href = '/App1';
-
-//        $routeProvider.
-//        otherwise({
-//            redirectTo: 'customerList.html'             
-//        });
-    	
-    	
-//    	resourceUrl = $resource('/App1/rest/customers/all');
-//    	resourceUrl.query(function(data) {
-//        	//console.log(data);
-//        	   $scope.customers=data;
-//        });
+    	resourceUrl.save(JSON.stringify(customerData));    	
+        $window.location.href = '/App1/#/CustomerList';
       };
+      
+//      $scope.edit = function(customerId) {
+//      	console.log("hi");
+//      }
     }]);
 
 

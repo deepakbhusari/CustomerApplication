@@ -1,7 +1,7 @@
 package org.in.app;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Singleton;
@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @Singleton
 public class AppConfig {
 	private final static AtomicLong idCounter = new AtomicLong();
-	private final static List<Customer> custDb = new ArrayList<Customer>();
+	private final static List<Customer> custDb = new CopyOnWriteArrayList<Customer>();
 
 	private final static ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -50,4 +50,14 @@ public class AppConfig {
 		return false;
 	}
 
+	public static boolean removeCustomer(long id) {
+		for (Customer customer : custDb) {
+			if (customer.getId() == id) {
+				custDb.remove(customer);
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

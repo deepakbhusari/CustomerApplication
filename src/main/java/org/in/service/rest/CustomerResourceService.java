@@ -6,10 +6,8 @@ import java.io.PrintStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.util.List;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
@@ -26,7 +24,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import javax.inject.*;
 
 @Path("/customers")
@@ -56,10 +53,19 @@ public class CustomerResourceService {
 
 		try {
 			customer = AppConfig.getMapper().readValue(is, Customer.class);
-			if (!AppConfig.isCustomerPresent(customer.getName())) {
+
+			if (customer.getId() == 0) {
+
+				// if (!AppConfig.isCustomerPresent(customer.getName())) {
 				customer.setId(AppConfig.getIdcounter().incrementAndGet());
 				AppConfig.getCustomerdb().add(customer);
 				l.debug("customer {}", customer.getId());
+			} else {
+				// Update record
+				boolean response = AppConfig.removeCustomer(customer.getId());// getCustomerdb().remove(customer);
+				if (response) {
+					AppConfig.getCustomerdb().add(customer);
+				}
 			}
 
 			return Response.created(URI.create("/customers/all" + customer.getId())).build();
@@ -73,18 +79,18 @@ public class CustomerResourceService {
 		return null;
 	}
 
-	@PUT
-	@Path("{id}")
-	@Consumes("application/xml")
-	public void updateCustomer(@PathParam("id") int id, String is) {
-		Customer update = readCustomer(is);
-		Customer current = AppConfig.getCustomerdb().get(id);
-		if (current == null)
-			throw new WebApplicationException(Response.Status.NOT_FOUND);
-
-		current.setName(update.getName());
-		current.setCountry(update.getCountry());
-	}
+	// @PUT
+	// @Path("{id}")
+	// @Consumes("application/xml")
+	// public void updateCustomer(@PathParam("id") int id, String is) {
+	// Customer update = readCustomer(is);
+	// Customer current = AppConfig.getCustomerdb().get(id);
+	// if (current == null)
+	// throw new WebApplicationException(Response.Status.NOT_FOUND);
+	//
+	// current.setName(update.getName());
+	// current.setCountry(update.getCountry());
+	// }
 
 	@GET
 	@Path("/id/{id}")
@@ -92,17 +98,18 @@ public class CustomerResourceService {
 	public Response getCustomer(@PathParam("id") long id) {
 		final Customer customer = AppConfig.fetchCustomer(id);
 		if (customer == null) {
-			// throw new WebApplicationException(Response.Status.NOT_FOUND);
-			return Response.status(200).entity("Customer not found " + id).build();
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+			// return "Customer not found " + id;//
+			// Response.status(200).entity("Customer
+			// not found " + id).build();
 		} else {
 			try {
 				return Response.status(200)
 						.entity(AppConfig.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(customer))
 						.build();
-			} catch (JsonProcessingException e) {
+			} catch (IOException e) {
 				l.error("{}", e.getMessage());
 			}
-			// String output = "Hello from: " + id + " : " + customer.getName();
 		}
 
 		return null;
@@ -115,8 +122,10 @@ public class CustomerResourceService {
 		// XStream xStream = new XStream();
 		// xStream.alias("map", java.util.Map.class);
 		// String output = xStream.toXML(db);
+		l.debug("db size {}", db.size());
 
 		try {
+
 			return AppConfig.getMapper().writeValueAsString(db);
 			// return
 			// Response.status(200).entity(AppConfig.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(db)).build();

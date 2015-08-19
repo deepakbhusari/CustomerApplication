@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html data-ng-app="applWeb">
+<head>
+<meta charset="UTF-8">
+<title>Customer Application</title>
+
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/angular-route.min.js"></script>
+<script type="text/javascript" src="js/angular-resource.min.js"></script>
+
+<script src="js/scriptApplication.js"></script>
+
+
+<script type="text/javascript">
+	angular
+	.element(document.getElementsByTagName('head'))
+	.append(angular.element('<base href="' + window.location.pathname + '" />'));
+</script>
+
+<style type="text/css">
+A:link {text-decoration: none;color:blue;}
+A:visited {text-decoration: none;color:blue;}
+A:active {text-decoration: none;color:green}
+A:hover {text-decoration: underline; color: green;font-size:24; font-weight:bold;background:white}
+
+.tableRowHeaderClass {
+  color: grey;
+}
+
+.tableRowClass {
+  color: orange;
+}
+
+td, th {
+    border: 1px #ccc solid;
+}
+</style>
+
+</head>
+<body>
+
+<h1>Company ABC</h1>
+
+		<a href="#"  >Home</a>
+	<ul class="nav">
+		<li><a href="#/CustomerList">Customer </a></li>
+		<li><a href="#/ProductList"> Product </a></li>
+	</ul>
+
+	<div ng-view></div>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+<div>
+	<form ng-controller="customerFormCtrl" name="formCustomer" novalidate>
+		<label>Name :</label> <input type="text" ng-model="customer.name" /> </br>
+		<label>Country :</label> <input type=“text " ng-model="customer.country" /></br> 
+		<button type="submit" ng-click="create(customer)" ng-disabled="false">Save</button>
+	</form>
+</div>

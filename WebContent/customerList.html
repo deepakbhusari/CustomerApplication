@@ -1,0 +1,33 @@
+
+<title>Customer List</title>
+</head>
+<body>
+
+
+<ul ng-controller="customerListController" class="tableRowClass">
+
+ <table cellspacing="1" cellpadding="4" >
+   <colgroup span="7"></colgroup>
+
+   <tbody>
+     <tr class="tableRowHeaderClass">
+       <th scope="col" title="Id">Id</th>
+       <th scope="col" title="Name">Name</th>
+       <th scope="col" title="Country">Country</th>
+     </tr>
+
+         <tr ng-repeat="customer in customers">
+         <td> {{customer.id}}     </td><td>    {{customer.name}} </td><td>   {{customer.country}}   </td>
+         <td>  
+         <a href="#CustomerForm?id={{customer.id}}">edit</a>
+         </td>
+                   
+     </tr>
+ </tbody>
+ </table>
+
+<br>
+
+   <li><a href="#/CustomerForm">Add Customer </a></li>
+
+</div>
